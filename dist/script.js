@@ -41,19 +41,18 @@ window.addEventListener('resize', () => {
 });
 
 // The orbit follows the pointer without changing its content or blocking links.
-const machine = document.querySelector('#machine');
-const machineWrap = document.querySelector('.machine-wrap');
+const pixelStage = document.querySelector('.pixel-stage');
 const glow = document.querySelector('.cursor-glow');
 const finePointer = window.matchMedia('(pointer: fine)');
 if (finePointer.matches && !reducedMotion.matches) {
-  machineWrap.addEventListener('pointermove', (event) => {
-    const rect = machineWrap.getBoundingClientRect();
+  pixelStage.addEventListener('pointermove', (event) => {
+    const rect = pixelStage.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width - 0.5;
     const y = (event.clientY - rect.top) / rect.height - 0.5;
-    machine.style.transform = `rotateY(${x * 13}deg) rotateX(${-y * 13}deg)`;
+    pixelStage.style.translate = `${x * 5}px ${y * 5}px`;
   });
-  machineWrap.addEventListener('pointerleave', () => {
-    machine.style.transform = '';
+  pixelStage.addEventListener('pointerleave', () => {
+    pixelStage.style.translate = '';
   });
   let glowFrame = 0;
   window.addEventListener('pointermove', (event) => {
@@ -67,17 +66,61 @@ if (finePointer.matches && !reducedMotion.matches) {
   }, { passive: true });
 }
 
-const visualizer = document.querySelector('#visualizer');
-const modeLabel = document.querySelector('#mode-label');
-const modes = { calmo: { label: 'CALMO', speed: 2.5 }, pulso: { label: 'PULSO', speed: 1 }, caos: { label: 'CAOS', speed: 0.38 } };
-document.querySelectorAll('[data-mode]').forEach((button) => {
+const gameConsole = document.querySelector('#game-console');
+const collectBlocks = [...document.querySelectorAll('.collect-block')];
+const questCount = document.querySelector('#quest-count');
+const questXp = document.querySelector('#quest-xp');
+const heroXp = document.querySelector('#hero-xp');
+const questMessage = document.querySelector('#quest-message');
+const questReset = document.querySelector('#quest-reset');
+const meterTiles = [...document.querySelectorAll('.console-meter i')];
+let collectedBlocks = 0;
+function formatXp(value) {
+  return String(value).padStart(3, '0');
+}
+collectBlocks.forEach((button) => {
   button.addEventListener('click', () => {
-    const mode = button.dataset.mode;
-    if (!modes[mode]) return;
-    document.querySelectorAll('[data-mode]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
-    visualizer.dataset.mode = mode;
-    visualizer.style.setProperty('--motion-speed', modes[mode].speed);
-    modeLabel.textContent = modes[mode].label;
+    if (button.disabled) return;
+    button.disabled = true;
+    button.classList.add('collected');
+    collectedBlocks += 1;
+    questCount.textContent = String(collectedBlocks);
+    questXp.textContent = formatXp(collectedBlocks * 10);
+    heroXp.textContent = formatXp(collectedBlocks * 10);
+    meterTiles[collectedBlocks - 1]?.classList.add('done');
+    if (collectedBlocks === collectBlocks.length) {
+      gameConsole.classList.add('complete');
+      questMessage.textContent = 'FASE COMPLETA! +40 XP';
+      questReset.hidden = false;
+      questReset.focus();
+    } else {
+      questMessage.textContent = `${collectBlocks.length - collectedBlocks} BLOCOS RESTANTES`;
+    }
+  });
+});
+questReset.addEventListener('click', () => {
+  collectedBlocks = 0;
+  collectBlocks.forEach((button) => {
+    button.disabled = false;
+    button.classList.remove('collected');
+  });
+  meterTiles.forEach((tile) => tile.classList.remove('done'));
+  gameConsole.classList.remove('complete');
+  questCount.textContent = '0';
+  questXp.textContent = '000';
+  heroXp.textContent = '000';
+  questMessage.textContent = 'ACHE OS BLOCOS PARA COMEÇAR';
+  questReset.hidden = true;
+  collectBlocks[0].focus();
+});
+
+document.querySelectorAll('.vibe-controls button[data-vibe]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const vibe = button.dataset.vibe;
+    document.body.dataset.vibe = vibe;
+    document.querySelectorAll('.vibe-controls button[data-vibe]').forEach((choice) => {
+      choice.setAttribute('aria-pressed', String(choice === button));
+    });
   });
 });
 

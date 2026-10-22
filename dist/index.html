@@ -9,12 +9,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
     <script src="./script.js" defer></script>
   </head>
-  <body>
+  <body data-vibe="pulso">
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <div class="grain" aria-hidden="true"></div>
+    <div class="psy-overlay" aria-hidden="true"></div>
     <div class="cursor-glow" aria-hidden="true"></div>
 
     <header class="site-header" id="topo">
@@ -30,7 +32,7 @@
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Abrir menu">
         <span></span><span></span>
       </button>
-      <div class="edition">PORTFÓLIO <span>•</span> VERSÃO CONCEITO</div>
+      <div class="edition"><span class="edition-chip">PLAYER 01</span> <span>•</span> LEVEL 01</div>
     </header>
 
     <nav class="mobile-menu" id="mobile-menu" aria-label="Navegação móvel" hidden>
@@ -42,42 +44,40 @@
     <main id="conteudo">
       <section class="hero section-shell" aria-labelledby="hero-title">
         <div class="hero-grid" aria-hidden="true"></div>
-        <div class="hero-topline"><span class="live-dot"></span> CRIANDO ALGO FORA DO AUTOMÁTICO <span class="topline-end">(001 — 2026)</span></div>
+        <div class="hero-topline"><span class="live-dot"></span> HUGO'S PIXEL WORLD <span class="topline-end">BUILD 001 / 2026</span></div>
         <div class="hero-inner">
           <div class="hero-copy">
-            <div class="eyebrow reveal"><span class="asterisk">✳</span> OLÁ, EU SOU</div>
-            <h1 id="hero-title" class="hero-title reveal">HU<span class="hero-letter">G<span class="letter-cross">+</span></span>O<span class="title-period">.</span></h1>
+            <div class="eyebrow reveal"><span class="asterisk">✳</span> PLAYER 01 / CONSTRUTOR DE IDEIAS</div>
+            <h1 id="hero-title" class="hero-title reveal"><span>HUGO</span><span class="title-period">_</span></h1>
             <div class="hero-bottom reveal">
-              <p>Ideias em movimento.<br /><strong>Interfaces com presença.</strong></p>
-              <span class="hero-index">DESIGN <span>↗</span> CÓDIGO <span>↗</span> EXPERIMENTO</span>
+              <p>Um bloco de cada vez.<br /><strong>Ideias viram experiência.</strong></p>
+              <span class="hero-index">DESIGN <span>+</span> CÓDIGO <span>+</span> JOGO</span>
             </div>
           </div>
-          <div class="machine-wrap reveal" aria-label="Escultura digital interativa em forma de sinal">
-            <div class="machine" id="machine" aria-hidden="true">
-              <div class="machine-halo"></div>
-              <div class="orbit orbit-one"><i></i></div>
-              <div class="orbit orbit-two"><i></i></div>
-              <div class="orbit orbit-three"></div>
-              <div class="machine-disc">
-                <div class="disc-lines"></div>
-                <span class="disc-core">H<span>✳</span></span>
-              </div>
-              <span class="machine-cross cross-one">+</span>
-              <span class="machine-cross cross-two">+</span>
-              <span class="machine-coordinate">X: 20°<br />Y: 26°</span>
-              <span class="machine-label">SINAL / 001</span>
+          <div class="pixel-stage reveal" aria-label="Cena em pixel art com um personagem construindo uma página">
+            <div class="stage-hud"><span><i class="hud-heart">♥</i> HP 100</span><span>WORLD 01-01</span><span>XP <b id="hero-xp">000</b></span></div>
+            <div class="stage-sky" aria-hidden="true"><i class="pixel-star star-a">✦</i><i class="pixel-star star-b">✦</i><i class="pixel-cloud cloud-a"></i><i class="pixel-cloud cloud-b"></i></div>
+            <div class="pixel-build-area" aria-hidden="true">
+              <div class="pixel-sign"><span>HUGO</span><small>PORTFÓLIO.EXE</small></div>
+              <div class="pixel-crate crate-a"></div><div class="pixel-crate crate-b"></div><div class="pixel-crate crate-c"></div>
             </div>
-            <div class="machine-caption"><span>FIG. 01</span><span>ARRASTE O OLHAR, MUDE O SINAL</span></div>
+            <div class="pixel-ground" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="builder-actor" aria-hidden="true">
+              <svg class="builder-sprite" viewBox="0 0 16 18" shape-rendering="crispEdges"><rect x="5" y="2" width="6" height="5" fill="#f3bb86"/><rect x="4" y="1" width="8" height="2" fill="#dafa33"/><rect x="3" y="2" width="2" height="2" fill="#dafa33"/><rect x="5" y="4" width="1" height="1" fill="#181811"/><rect x="9" y="4" width="1" height="1" fill="#181811"/><rect x="5" y="7" width="6" height="5" fill="#ff6543"/><rect x="6" y="8" width="4" height="4" fill="#4949a6"/><rect x="3" y="8" width="2" height="4" fill="#f3bb86"/><rect x="11" y="7" width="2" height="4" fill="#f3bb86"/><rect x="13" y="6" width="2" height="3" fill="#dafa33"/><rect x="5" y="12" width="3" height="4" fill="#292a25"/><rect x="9" y="12" width="3" height="4" fill="#292a25"/><rect x="4" y="16" width="4" height="1" fill="#f2f0e9"/><rect x="9" y="16" width="4" height="1" fill="#f2f0e9"/></svg>
+              <span class="actor-tag">HUGO <i>LV.01</i></span>
+            </div>
+            <div class="stage-progress"><span>CONSTRUINDO SUA PÁGINA</span><div class="progress-tiles" aria-label="Progresso visual"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span>12%</span></div>
+            <div class="machine-caption"><span>NPC / 001</span><span>HUGO, O CONSTRUTOR</span></div>
           </div>
         </div>
         <div class="hero-footer">
           <a class="round-link" href="#projetos" aria-label="Explorar projetos"><span>↓</span></a>
-          <p>Um espaço para experimentar design, código e interação. <span>Primeiro esboço — conteúdo provisório.</span></p>
+          <p>Uma jornada em pixels para apresentar design, código e interação. <span>Protótipo em construção.</span></p>
           <div class="scroll-note">ROLE PARA EXPLORAR <span>↓</span></div>
         </div>
       </section>
 
-      <div class="ticker" aria-hidden="true"><div class="ticker-track"><span>IMAGINAR MAIS <b>✳</b> CRIAR MELHOR <b>✳</b> MEXER EM TUDO <b>✳</b> IMAGINAR MAIS <b>✳</b> CRIAR MELHOR <b>✳</b> MEXER EM TUDO <b>✳</b></span><span>IMAGINAR MAIS <b>✳</b> CRIAR MELHOR <b>✳</b> MEXER EM TUDO <b>✳</b> IMAGINAR MAIS <b>✳</b> CRIAR MELHOR <b>✳</b> MEXER EM TUDO <b>✳</b></span></div></div>
+      <div class="ticker" aria-hidden="true"><div class="ticker-track"><span>BUILD <b>▰</b> PLAY <b>▰</b> REPEAT <b>▰</b> BUILD <b>▰</b> PLAY <b>▰</b> REPEAT <b>▰</b></span><span>BUILD <b>▰</b> PLAY <b>▰</b> REPEAT <b>▰</b> BUILD <b>▰</b> PLAY <b>▰</b> REPEAT <b>▰</b></span></div></div>
 
       <section class="intro section-shell" id="sobre" aria-labelledby="intro-title">
         <div class="section-kicker"><span>02 / MANIFESTO</span><span>UMA IDEIA, MUITAS POSSIBILIDADES</span></div>
@@ -99,17 +99,17 @@
         <div class="project-grid">
           <article class="project-card card-one reveal">
             <div class="card-top"><span>01 / CONCEITO</span><span class="card-plus">↗</span></div>
-            <div class="card-art art-orbit" aria-hidden="true"><div class="art-orbit-rings"><i></i><i></i><i></i></div><div class="art-orbit-center">M<span>◉</span></div><small>MOVE / SYSTEM</small></div>
+            <div class="card-art pixel-project-art art-build" aria-hidden="true"><div class="build-word">IDEIA<span>.</span></div><div class="floating-tile tile-a"></div><div class="floating-tile tile-b"></div><div class="floating-tile tile-c"></div><div class="mini-builder">H</div><small>FASE 01 / MOTION SYSTEM</small></div>
             <div class="card-info"><div><span class="card-type">ESTUDO DE INTERFACE</span><h3>Motion System</h3></div><p>Transições com ritmo, intenção e personalidade.</p></div>
           </article>
           <article class="project-card card-two reveal">
             <div class="card-top"><span>02 / CONCEITO</span><span class="card-plus">↗</span></div>
-            <div class="card-art art-atlas" aria-hidden="true"><div class="atlas-circle"></div><div class="atlas-square square-a"></div><div class="atlas-square square-b"></div><span>ATLAS<br />DIGITAL<span class="atlas-arrow">↗</span></span><small>EXPLORE THE UNKNOWN</small></div>
+            <div class="card-art pixel-project-art art-map" aria-hidden="true"><div class="pixel-map"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="map-player">●</div><small>FASE 02 / ATLAS DIGITAL</small></div>
             <div class="card-info"><div><span class="card-type">CONCEITO DE PRODUTO</span><h3>Atlas Digital</h3></div><p>Navegação, descoberta e conteúdo em camadas.</p></div>
           </article>
           <article class="project-card card-three reveal">
             <div class="card-top"><span>03 / PROJETO REAL</span><span class="card-plus">↗</span></div>
-            <div class="card-art art-lab" aria-hidden="true"><div class="lab-lines"></div><span class="lab-star">✳</span><span class="lab-word">HUGO<br />LAB<span>.</span></span><small>VOCÊ ESTÁ AQUI ↗</small></div>
+            <div class="card-art pixel-project-art art-player" aria-hidden="true"><div class="mini-sun"></div><svg class="project-sprite" viewBox="0 0 16 18" shape-rendering="crispEdges"><rect x="5" y="2" width="6" height="5" fill="#f3bb86"/><rect x="4" y="1" width="8" height="2" fill="#dafa33"/><rect x="3" y="2" width="2" height="2" fill="#dafa33"/><rect x="5" y="4" width="1" height="1" fill="#181811"/><rect x="9" y="4" width="1" height="1" fill="#181811"/><rect x="5" y="7" width="6" height="5" fill="#ff6543"/><rect x="6" y="8" width="4" height="4" fill="#4949a6"/><rect x="3" y="8" width="2" height="4" fill="#f3bb86"/><rect x="11" y="7" width="2" height="4" fill="#f3bb86"/><rect x="13" y="6" width="2" height="3" fill="#dafa33"/><rect x="5" y="12" width="3" height="4" fill="#292a25"/><rect x="9" y="12" width="3" height="4" fill="#292a25"/><rect x="4" y="16" width="4" height="1" fill="#f2f0e9"/><rect x="9" y="16" width="4" height="1" fill="#f2f0e9"/></svg><span class="player-name">HUGO<br />LV.01</span><small>FASE 03 / VOCÊ ESTÁ AQUI</small></div>
             <div class="card-info"><div><span class="card-type">PORTFÓLIO EXPERIMENTAL</span><h3>Este site</h3></div><p>Um primeiro universo para explorar e transformar.</p></div>
           </article>
         </div>
@@ -117,10 +117,21 @@
       </section>
 
       <section class="playground section-shell" id="playground" aria-labelledby="play-title">
-        <div class="section-kicker"><span>04 / PLAYGROUND</span><span>INTERAÇÃO AO VIVO</span></div>
+        <div class="section-kicker"><span>04 / MISSÃO EXTRA</span><span>INTERAÇÃO AO VIVO</span></div>
         <div class="playground-layout">
-          <div class="play-copy reveal"><span class="eyebrow">CONTROLE O CLIMA</span><h2 id="play-title">Sinta a<br /><em>frequência.</em></h2><p>Uma pequena amostra do espírito do site. Escolha a intensidade e veja a paisagem reagir.</p><div class="mode-controls" role="group" aria-label="Intensidade da animação"><button type="button" data-mode="calmo">01 / CALMO</button><button type="button" data-mode="pulso" aria-pressed="true">02 / PULSO</button><button type="button" data-mode="caos">03 / CAOS</button></div><span class="play-note">DICA: A EXPERIÊNCIA RESPEITA A CONFIGURAÇÃO DE MOVIMENTO REDUZIDO DO SEU DISPOSITIVO.</span></div>
-          <div class="visualizer reveal" id="visualizer" aria-label="Visualização animada de ondas abstratas"><div class="visualizer-grid"></div><div class="visualizer-sun"></div><div class="wave wave-a"></div><div class="wave wave-b"></div><div class="wave wave-c"></div><span class="visualizer-label">H / FREQUENCY LAB</span><span class="visualizer-count">◉ <span id="mode-label">PULSO</span></span><span class="visualizer-index">SIGNAL 004 / LIVE</span></div>
+          <div class="play-copy reveal"><span class="eyebrow">MISSÃO 01 / COLETAR BLOCOS</span><h2 id="play-title">Todo mundo<br />começa com<br /><em>um bloco.</em></h2><p>Toque nos quatro blocos para ajudar o construtor a montar a próxima parte do portfólio.</p><div class="quest-status"><span>PROGRESSO</span><strong><b id="quest-count">0</b> / 4</strong></div><button class="quest-reset" type="button" id="quest-reset" hidden>REINICIAR MISSÃO ↻</button><div class="vibe-panel"><span>CONTROLE DO MUNDO</span><div class="vibe-controls" role="group" aria-label="Intensidade dos efeitos visuais"><button type="button" data-vibe="pulso" aria-pressed="true">PULSO</button><button type="button" data-vibe="caos" aria-pressed="false">CAOS ✳</button></div></div><span class="play-note">O MODO CAOS USA CORES, BRILHO E MOVIMENTO EXTRA. A PÁGINA RESPEITA MOVIMENTO REDUZIDO.</span></div>
+          <div class="game-console reveal" id="game-console">
+            <div class="console-top"><span>HUGO'S PIXEL WORLD</span><span><i class="console-dot"></i> STAGE 01</span></div>
+            <div class="game-sky"><i class="game-star game-star-a">✦</i><i class="game-star game-star-b">✦</i><div class="game-cloud"></div><div class="game-platform"></div>
+              <button class="collect-block block-orange" type="button" data-block="1" aria-label="Coletar bloco laranja"><span></span></button>
+              <button class="collect-block block-blue" type="button" data-block="2" aria-label="Coletar bloco azul"><span></span></button>
+              <button class="collect-block block-lime" type="button" data-block="3" aria-label="Coletar bloco verde"><span></span></button>
+              <button class="collect-block block-white" type="button" data-block="4" aria-label="Coletar bloco claro"><span></span></button>
+              <div class="game-actor" aria-hidden="true"><svg viewBox="0 0 16 18" shape-rendering="crispEdges"><rect x="5" y="2" width="6" height="5" fill="#f3bb86"/><rect x="4" y="1" width="8" height="2" fill="#dafa33"/><rect x="3" y="2" width="2" height="2" fill="#dafa33"/><rect x="5" y="4" width="1" height="1" fill="#181811"/><rect x="9" y="4" width="1" height="1" fill="#181811"/><rect x="5" y="7" width="6" height="5" fill="#ff6543"/><rect x="6" y="8" width="4" height="4" fill="#4949a6"/><rect x="3" y="8" width="2" height="4" fill="#f3bb86"/><rect x="11" y="7" width="2" height="4" fill="#f3bb86"/><rect x="13" y="6" width="2" height="3" fill="#dafa33"/><rect x="5" y="12" width="3" height="4" fill="#292a25"/><rect x="9" y="12" width="3" height="4" fill="#292a25"/><rect x="4" y="16" width="4" height="1" fill="#f2f0e9"/><rect x="9" y="16" width="4" height="1" fill="#f2f0e9"/></svg></div>
+            </div>
+            <div class="console-bottom"><span>XP <b id="quest-xp">000</b></span><span id="quest-message" aria-live="polite">ACHE OS BLOCOS PARA COMEÇAR</span><span>HUGO.EXE</span></div>
+            <div class="console-meter"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
         </div>
       </section>
 
