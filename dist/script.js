@@ -45,7 +45,43 @@ const pools = colors.map((color, index) => ({
   phase: index * 1.73,
   radius: Math.min(width, height) * (0.19 + (index % 3) * 0.035)
 }));
+const shapeColors = ['#ff42d0', '#45eaff', '#68ff54', '#ffb63f', '#b46cff', '#ff4b6f', '#e8efff'];
+const shapes = [];
+function createFloatingShape() {
+  let x = width / 2;
+  let y = height / 2;
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    const zone = Math.random();
+    if (zone < 0.3) { x = Math.random() * width * 0.22; y = Math.random() * height; }
+    else if (zone < 0.6) { x = width * (0.78 + Math.random() * 0.22); y = Math.random() * height; }
+    else if (zone < 0.8) { x = Math.random() * width; y = Math.random() * height * 0.16; }
+    else { x = Math.random() * width; y = height * (0.84 + Math.random() * 0.16); }
+    const inQuietCenter = x < width * 0.78 && y > height * 0.17 && y < height * 0.83;
+    if (!inQuietCenter || Math.random() < 0.08) break;
+  }
+  const large = Math.random() < 0.13;
+  return {
+    x, y,
+    size: large ? 54 + Math.random() * 48 : 11 + Math.random() * 39,
+    sides: 3 + Math.floor(Math.random() * 5),
+    kind: Math.random() < 0.42 ? 'cube' : 'polygon',
+    color: shapeColors[Math.floor(Math.random() * shapeColors.length)],
+    alpha: 0.48 + Math.random() * 0.35,
+    angle: Math.random() * Math.PI * 2,
+    spin: (Math.random() - 0.5) * 0.0022,
+    phase: Math.random() * Math.PI * 2,
+    speed: 0.004 + Math.random() * 0.009,
+    vx: (Math.random() - 0.5) * 0.32,
+    vy: (Math.random() - 0.5) * 0.32
+  };
+}
+function seedShapes() {
+  const count = Math.min(82, Math.max(28, Math.round(width * height / 22000)));
+  shapes.length = 0;
+  for (let index = 0; index < count; index += 1) shapes.push(createFloatingShape());
+}
 const ripples = [];
+const clickBursts = [];
 let frame = 0;
 let lastPaint = 0;
 function resizeCanvas() {
@@ -60,10 +96,13 @@ function resizeCanvas() {
     pool.x = Math.min(pool.x, width);
     pool.y = Math.min(pool.y, height);
   });
+  seedShapes();
   paint(0, true);
 }
 function emitRipple(x, y) {
+  if (reducedMotion.matches) return;
   ripples.push({ x, y, start: performance.now() });
+  clickBursts.push({ x, y, start: performance.now() });
   if (ripples.length > 7) ripples.shift();
 }
 function paint(now, staticFrame = false) {
@@ -78,8 +117,8 @@ function paint(now, staticFrame = false) {
     pool.phase += energetic ? 0.0028 + index * 0.00018 : 0;
     const driftX = Math.sin(pool.phase * 1.3) * width * 0.055;
     const driftY = Math.cos(pool.phase * 0.9) * height * 0.065;
-    const targetX = pool.x + driftX + (pointer.seen ? (pointer.x - pool.x) * 0.075 : 0);
-    const targetY = pool.y + driftY + (pointer.seen ? (pointer.y - pool.y) * 0.075 : 0);
+    const targetX = pool.x + driftX + (pointer.seen && energetic ? (pointer.x - pool.x) * 0.075 : 0);
+    const targetY = pool.y + driftY + (pointer.seen && energetic ? (pointer.y - pool.y) * 0.075 : 0);
     const radius = pool.radius * (1 + Math.sin(pool.phase * 0.7) * (energetic ? 0.12 : 0));
     const gradient = ctx.createRadialGradient(targetX, targetY, 0, targetX, targetY, radius);
     gradient.addColorStop(0, `${pool.color}44`);
@@ -87,6 +126,88 @@ function paint(now, staticFrame = false) {
     gradient.addColorStop(1, `${pool.color}00`);
     ctx.fillStyle = gradient;
     ctx.fillRect(targetX - radius, targetY - radius, radius * 2, radius * 2);
+  });
+  shapes.forEach((shape) => {
+    if (energetic) {
+      shape.phase += shape.speed;
+      if (pointer.seen) {
+        const dx = shape.x - pointer.x;
+        const dy = shape.y - pointer.y;
+        const distance = Math.max(1, Math.hypot(dx, dy));
+        if (distance < 145) {
+          const force = (1 - distance / 145) * 0.075;
+          shape.vx += (dx / distance) * force;
+          shape.vy += (dy / distance) * force;
+        }
+      }
+      clickBursts.forEach((burst) => {
+        const age = (now - burst.start) / 800;
+        if (age < 0 || age > 1) return;
+        const dx = shape.x - burst.x;
+        const dy = shape.y - burst.y;
+        const distance = Math.max(1, Math.hypot(dx, dy));
+        const ringRadius = age * 225;
+        if (Math.abs(distance - ringRadius) < 38) {
+          const force = (1 - age) * 0.42;
+          shape.vx += (dx / distance) * force;
+          shape.vy += (dy / distance) * force;
+        }
+      });
+      shape.vx *= 0.984;
+      shape.vy *= 0.984;
+      shape.x += shape.vx + Math.sin(shape.phase) * 0.11;
+      shape.y += shape.vy + Math.cos(shape.phase * 0.83) * 0.11;
+      shape.angle += shape.spin;
+      const margin = shape.size + 8;
+      if (shape.x < -margin) shape.x = width + margin;
+      if (shape.x > width + margin) shape.x = -margin;
+      if (shape.y < -margin) shape.y = height + margin;
+      if (shape.y > height + margin) shape.y = -margin;
+    }
+    ctx.save();
+    ctx.translate(shape.x + Math.sin(shape.phase) * 2, shape.y + Math.cos(shape.phase * 0.83) * 2);
+    ctx.rotate(shape.angle);
+    ctx.globalAlpha = Math.min(1, shape.alpha * (energetic ? 1.35 : 0.52));
+    ctx.strokeStyle = shape.color;
+    ctx.lineWidth = shape.size > 48 ? 1.45 : 1.05;
+    ctx.lineJoin = 'round';
+    ctx.shadowColor = shape.color;
+    ctx.shadowBlur = energetic ? 16 : 3;
+    const size = shape.size;
+    if (shape.kind === 'cube') {
+      const points = [[0,-size*.62],[size*.55,-size*.31],[size*.55,size*.31],[0,size*.62],[-size*.55,size*.31],[-size*.55,-size*.31]];
+      ctx.beginPath();
+      ctx.moveTo(points[0][0], points[0][1]);
+      points.slice(1).forEach(([px, py]) => ctx.lineTo(px, py));
+      ctx.closePath();
+      ctx.moveTo(0, 0); ctx.lineTo(points[1][0], points[1][1]);
+      ctx.moveTo(0, 0); ctx.lineTo(points[3][0], points[3][1]);
+      ctx.moveTo(0, 0); ctx.lineTo(points[5][0], points[5][1]);
+      ctx.stroke();
+    } else {
+      ctx.beginPath();
+      for (let side = 0; side < shape.sides; side += 1) {
+        const angle = (Math.PI * 2 * side) / shape.sides - Math.PI / 2;
+        const px = Math.cos(angle) * size;
+        const py = Math.sin(angle) * size;
+        if (side === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.stroke();
+      if (size > 42) {
+        ctx.globalAlpha *= 0.5;
+        ctx.beginPath();
+        for (let side = 0; side < shape.sides; side += 1) {
+          const angle = (Math.PI * 2 * side) / shape.sides - Math.PI / 2;
+          const px = Math.cos(angle) * size * 0.72;
+          const py = Math.sin(angle) * size * 0.72;
+          if (side === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
   });
   const time = performance.now();
   ripples.forEach((ripple) => {
@@ -100,6 +221,9 @@ function paint(now, staticFrame = false) {
   });
   for (let index = ripples.length - 1; index >= 0; index -= 1) {
     if (time - ripples[index].start > 1150) ripples.splice(index, 1);
+  }
+  for (let index = clickBursts.length - 1; index >= 0; index -= 1) {
+    if (time - clickBursts[index].start > 800) clickBursts.splice(index, 1);
   }
   if (!staticFrame) frame = requestAnimationFrame(paint);
 }
@@ -120,10 +244,67 @@ startCanvas();
 const progressRoot = document.documentElement;
 const fallCount = document.querySelector('.fall-count');
 const chapters = [...document.querySelectorAll('[data-section]')];
+const mainContent = document.querySelector('#conteudo');
+const siteHeader = document.querySelector('.site-header');
+const loopCopy = document.createElement('div');
+loopCopy.className = 'infinite-loop-copy';
+loopCopy.setAttribute('aria-hidden', 'true');
+loopCopy.inert = true;
+loopCopy.style.pointerEvents = 'none';
+const headerSpacer = document.createElement('div');
+headerSpacer.setAttribute('aria-hidden', 'true');
+const repeatedContent = mainContent.cloneNode(true);
+const repeatedFooter = document.querySelector('.site-footer').cloneNode(true);
+repeatedContent.removeAttribute('id');
+repeatedContent.querySelectorAll('[id]').forEach((element) => element.removeAttribute('id'));
+loopCopy.append(headerSpacer, repeatedContent, repeatedFooter);
+document.body.append(loopCopy);
+const repeatedMain = loopCopy.querySelector('main');
+let loopStart = 0;
+let loopOffset = 0;
+let isWrapping = false;
+function scrollInstantly(target) {
+  const previousBehavior = progressRoot.style.scrollBehavior;
+  progressRoot.style.scrollBehavior = 'auto';
+  window.scrollTo(0, target);
+  requestAnimationFrame(() => {
+    progressRoot.style.scrollBehavior = previousBehavior;
+  });
+}
+function measureLoop() {
+  const headerHeight = siteHeader.getBoundingClientRect().height;
+  headerSpacer.style.height = `${headerHeight}px`;
+  const sourceMainTop = mainContent.getBoundingClientRect().top + window.scrollY;
+  const repeatedMainTop = repeatedMain.getBoundingClientRect().top + window.scrollY;
+  loopStart = repeatedMainTop - headerHeight;
+  loopOffset = loopStart - Math.max(0, sourceMainTop - headerHeight);
+}
+function wrapLoopScroll() {
+  if (isWrapping || loopOffset <= 0 || window.scrollY < loopStart) return;
+  const atPhysicalEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+  let target = atPhysicalEnd ? 0 : window.scrollY - loopOffset;
+  while (target >= loopStart) target -= loopOffset;
+  isWrapping = true;
+  scrollInstantly(Math.max(0, target));
+  requestAnimationFrame(() => { isWrapping = false; });
+}
+measureLoop();
+if ('ResizeObserver' in window) {
+  const loopMeasureObserver = new ResizeObserver(measureLoop);
+  loopMeasureObserver.observe(mainContent);
+  loopMeasureObserver.observe(document.querySelector('.site-footer'));
+}
+document.fonts?.ready.then(measureLoop);
+window.addEventListener('scroll', wrapLoopScroll, { passive: true });
+window.addEventListener('resize', () => requestAnimationFrame(measureLoop), { passive: true });
+window.addEventListener('keydown', (event) => {
+  if (event.key !== 'End' || event.target.closest?.('input, textarea, select, [contenteditable="true"]')) return;
+  event.preventDefault();
+  scrollInstantly(0);
+});
 let scrollFrame = 0;
 function updateFall() {
-  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-  const percentage = maxScroll > 0 ? Math.min(100, Math.max(0, (window.scrollY / maxScroll) * 100)) : 0;
+  const percentage = loopStart > 0 ? Math.min(100, Math.max(0, (window.scrollY / loopStart) * 100)) : 0;
   progressRoot.style.setProperty('--scroll-progress', `${percentage}%`);
   const activeChapter = [...chapters].reverse().find((chapter) => chapter.getBoundingClientRect().top < window.innerHeight * 0.48);
   fallCount.textContent = `${activeChapter?.dataset.section || '01'}—${chapters.at(-1)?.dataset.section || '04'}`;
